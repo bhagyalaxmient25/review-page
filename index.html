@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Page</title>
+
+<style>
+    body { font-family: Arial; background:#f7f7f7; padding:20px; }
+    .box { background:white; padding:20px; border-radius:10px; max-width:500px; margin:auto; }
+    button { padding:14px; width:100%; border:none; border-radius:8px; margin-top:12px; font-size:17px; cursor:pointer; }
+    .copy { background:#007bff; color:white; }
+    .open { background:#28a745; color:white; }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>⭐ Support Us With a Review ⭐</h2>
+    <p id="reviewText" style="background:#eee; padding:10px; border-radius:5px;">Loading...</p>
+
+    <button class="copy" onclick="copyReview()">📋 Copy Review Text</button>
+    <button class="open" onclick="openReview()">🌟 Go to Google & Leave Review</button>
+</div>
+
+<script>
+let reviews = [];
+let currentIndex = 0;
+
+// Load last index
+const savedIndex = localStorage.getItem("reviewIndex");
+if (savedIndex !== null) currentIndex = parseInt(savedIndex);
+
+// Load reviews from external file
+fetch("reviews.json")
+  .then(res => res.json())
+  .then(data => {
+    reviews = data.reviews;
+    document.getElementById("reviewText").innerText = reviews[currentIndex];
+  });
+
+function copyReview() {
+    navigator.clipboard.writeText(reviews[currentIndex]);
+    alert("Review copied!");
+
+    currentIndex++;
+    if (currentIndex >= reviews.length) currentIndex = 0;
+
+    localStorage.setItem("reviewIndex", currentIndex);
+    document.getElementById("reviewText").innerText = reviews[currentIndex];
+}
+
+function openReview() {
+    window.open("YOUR_GOOGLE_REVIEW_URL_HERE", "_blank");
+}
+</script>
+
+</body>
+</html>
