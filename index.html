@@ -199,12 +199,12 @@
           <span class="stars">★★★★★</span>
           <span>5 Star (Write Review)</span>
         </div>
-        <p style="margin-top: 8px; opacity: 0.95;">Plywood Supplier · Jayesh Patel & Dhaval Patel</p>
+        <p style="margin-top: 8px; opacity: 0.95;">Plywood Supplier ·Jayesh Patel & Dhaval Patel </p>
       </div>
       <div class="info">
         <p><i class="fas fa-map-marker-alt"></i> 7, Changodar, Sanathal Changodar Rd, Ahmedabad, Gujarat 382213</p>
         <p><i class="fas fa-phone"></i> <a href="tel:09601595601" style="color: inherit; text-decoration: none;">096015 95601</a></p>
-        <p><i class="fas fa-clock"></i> Open Mon to Sat 9 AM to 7 PM</p>
+        <p><i class="fas fa-clock"></i> Open Mon to Sat  9 AM  to 7PM </p>
       </div>
     </div>
 
@@ -221,3 +221,76 @@
           <i class="fas fa-star"></i> Go to Google & Leave Review
         </button>
         <div class="nav-btns">
+          <button onclick="prevReview()"><i class="fas fa-arrow-left"></i> Previous</button>
+          <button onclick="nextReview()">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Thank you for supporting Bhagyalaxmi Enterprise!
+    </div>
+  </div>
+
+  <script>
+    // CHANGE THIS to your deployed backend URL
+    const API_BASE = "https://your-backend-url.com";
+
+    let currentReview = null;
+
+    async function fetchNextReview() {
+      const reviewEl = document.getElementById("reviewText");
+      reviewEl.innerText = "Loading review...";
+
+      try {
+        const res = await fetch(`${API_BASE}/next-review`);
+        const data = await res.json();
+
+        if (data.done) {
+          reviewEl.innerText = "🎉 All reviews are completed. Thank you!";
+          currentReview = null;
+        } else if (data.review) {
+          currentReview = data.review;
+          reviewEl.innerText = data.review;
+        } else {
+          reviewEl.innerText = "No review received from server.";
+        }
+      } catch (err) {
+        console.error(err);
+        reviewEl.innerText = "Failed to load review. Please try again later.";
+      }
+    }
+
+    function copyReview() {
+      if (!currentReview) return;
+
+      navigator.clipboard.writeText(currentReview)
+        .then(() => {
+          alert("Review copied to clipboard!");
+          fetchNextReview();
+        })
+        .catch(err => {
+          alert("Failed to copy. Please try again.");
+          console.error(err);
+        });
+    }
+
+    function nextReview() {
+      fetchNextReview();
+    }
+
+    function prevReview() {
+      // No true "previous" since each review is removed from backend,
+      // but we can simply fetch another one.
+      fetchNextReview();
+    }
+
+    function openReview() {
+      window.open("https://g.page/r/CUiWn5awG-z0EBM/review", "_blank");
+    }
+
+    // Load first review on page load
+    fetchNextReview();
+  </script>
+</body>
+</html>
